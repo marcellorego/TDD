@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StringCalculator {
 
@@ -48,12 +49,11 @@ public class StringCalculator {
     }
 
     private String findDelimiters(String group) {
-        List<String> result = new ArrayList<>();
         String[] groups = group.split("]\\[");
-        for (String item : groups) {
-            result.add(item.replaceAll("\\[", "").replaceAll("]", ""));
-        }
-        return result.stream().collect(Collectors.joining("|"));
+        String result = Stream.of(groups)
+                .map(item -> item.replaceAll("\\[", "").replaceAll("]", ""))
+                .collect(Collectors.joining("|"));
+        return result;
     }
 
     private boolean hasMatchesWithPattern(String delimiterOptions) {
