@@ -18,9 +18,17 @@ public class StringCalculatorTest {
 //        stringCalculator.add("1,2,3");
 //    }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public final void whenANonNumberIsUsedThenExceptionIsThrown() {
-        stringCalculator.add("1,A");
+        Exception exception = null;
+        try {
+            stringCalculator.add("1,A");
+        } catch (IllegalArgumentException iex) {
+            exception = iex;
+        }
+
+        Assert.assertNotNull(exception);
+        Assert.assertEquals("Invalid number representation: A", exception.getMessage());
     }
 
     @Test(expected = IllegalArgumentException.class)

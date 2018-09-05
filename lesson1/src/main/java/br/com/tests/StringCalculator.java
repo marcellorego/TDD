@@ -8,19 +8,23 @@ import java.util.stream.Collectors;
 
 public class StringCalculator {
 
+    private static final String BASIC_DELIMITERS = ",|\n";
+    private static final String START_DELIMITER_PATTERN = "//";
+    private static final String END_DELIMITER_PATTERN = "\n";
     private static final String DELIMITER_PATTERN = "(\\[.+\\])+";
 
     public int add(final String numbers) {
         if (numbers == null) {
             throw new IllegalArgumentException("Not a sequence of numbers");
         }
-        String delimiters = ",|\n";
+
+        String delimiters = StringCalculator.BASIC_DELIMITERS;
         String numbersWithoutDelimiter = numbers.trim();
 
-        if (numbers.startsWith("//")) {
+        if (numbers.startsWith(START_DELIMITER_PATTERN)) {
 
-            int indexOfDelimiterStartPattern = numbers.indexOf("//") + 2;
-            int indexOfDelimitersEndPattern = numbers.indexOf("\n");
+            int indexOfDelimiterStartPattern = numbers.indexOf(START_DELIMITER_PATTERN) + 2;
+            int indexOfDelimitersEndPattern = numbers.indexOf(END_DELIMITER_PATTERN);
 
             String delimiterOptions = numbers.substring(indexOfDelimiterStartPattern, indexOfDelimitersEndPattern);
 
@@ -63,6 +67,14 @@ public class StringCalculator {
         return matcher;
     }
 
+    private Integer parseStringNumber(String number) {
+        try {
+            return Integer.parseInt(number.trim());
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException(String.format("Invalid number representation: %s", number));
+        }
+    }
+
     private int add(final String delimiter, final String numbers) {
         String[] values = numbers.split(delimiter);
 //        if (values.length > 2) {
@@ -72,7 +84,7 @@ public class StringCalculator {
         List<String> negativeNumbers = new ArrayList<>();
         for (String value : values) {
             if (!value.trim().isEmpty()) {
-                int parcel = Integer.parseInt(value.trim());
+                int parcel = parseStringNumber(value.trim());
                 if (parcel < 0) {
                     negativeNumbers.add(value.trim());
                 } else if (parcel <= 1000){
